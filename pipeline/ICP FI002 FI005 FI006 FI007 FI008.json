@@ -1,0 +1,255 @@
+{
+	"name": "ICP FI002 FI005 FI006 FI007 FI008",
+	"properties": {
+		"description": "Compte de résultat d'exploitation",
+		"activities": [
+			{
+				"name": "COMPTE RESULTAT EXPLOITATION",
+				"description": "COMPTE RESULTAT EXPLOITATION DATAFLOW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "CHARGES EXPLOITATION",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI005_COMPTE RESULTAT EXPLOITATION DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "PRODUITS",
+				"description": "COMPTE RESULTAT EXPLOITATION DATAFLOW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "DROIT INSCRIPTION",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI006_PRODUITS DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "MASSE SALARIALE",
+				"description": "COMPTE RESULTAT EXPLOITATION DATAFLOW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "PRODUITS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI007_MASSE SALARIALE DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "CHARGES EXPLOITATION",
+				"description": "COMPTE RESULTAT EXPLOITATION DATAFLOW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "MASSE SALARIALE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI008_CHARGES D EXPLOITATION DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DROIT INSCRIPTION",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "DERIVE_COLUMNS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI002_DROIT INSCRIPTION DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SPE_ICP_SYNTHESE_BUDGET_ANNUELLE",
+				"description": "Copy table SPE_ICP_SYNTHESE_BUDGET_ANNUELLE dans un CSV",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TABLE_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "DERIVE_COLUMNS",
+				"description": "DERIVE_COLUMNS",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "SPE_ICP_SYNTHESE_BUDGET_ANNUELLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TRANSFORM SPE_ICP_SYNTHESE BUDGET_ANNUELLE DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-09-19T13:33:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

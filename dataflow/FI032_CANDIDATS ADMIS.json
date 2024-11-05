@@ -1,0 +1,61 @@
+{
+	"name": "FI032_CANDIDATS ADMIS",
+	"properties": {
+		"description": "CANDIDATS ADMIS DATAFLOW",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_ALL_CANDIDATS",
+						"type": "DatasetReference"
+					},
+					"name": "Candidats"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI032_CANDIDATS_ADMIS",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ADMISFiLTER"
+				},
+				{
+					"name": "GROUPING"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Programme} as string,",
+				"          {Code.Statut d'inscription} as string,",
+				"          {Code.Type de groupe} as string,",
+				"          {Libellé.Programme} as string,",
+				"          {Nom de naissance.Apprenant} as string,",
+				"          {Prénom.Apprenant} as string,",
+				"          {id.Apprenant} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> Candidats",
+				"Candidats filter(in([\"ADMIN\", \"ADMIS SOUS RESERVE\", \"ADMIS SOUS RESERVE INSCRIPTION LICENCE\",\"ACOMPTE PAYE\",\"ACOMPTE NON PAYE\",\"CONFIRME\"], {Code.Statut d'inscription})) ~> ADMISFiLTER",
+				"ADMISFiLTER aggregate(groupBy({Code.Année académique}),",
+				"     totalAdmis = countDistinct({id.Apprenant})) ~> GROUPING",
+				"GROUPING sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI032_CANDIDATS_ADMIS'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

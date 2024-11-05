@@ -1,0 +1,39 @@
+{
+	"name": "FI099_ECH_PAIEMENT",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_FI099_ECH_PAIMENT",
+						"type": "DatasetReference"
+					},
+					"name": "DATA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI099",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> DATA",
+				"DATA sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI099'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

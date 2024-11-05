@@ -1,0 +1,146 @@
+{
+	"name": "FI011_DROITS INSCRIPTION MOYEN",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI002_DROITS_INSCRIPTION",
+						"type": "DatasetReference"
+					},
+					"name": "DROITS"
+				},
+				{
+					"dataset": {
+						"referenceName": "RESULT_ETUDIANTS",
+						"type": "DatasetReference"
+					},
+					"name": "ETUDIANTS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI011_DROITS_INSCRIPTION_MOYEN",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT",
+					"description": "RESULT_DROITS_INSCRIPTION_MOYEN"
+				}
+			],
+			"transformations": [
+				{
+					"name": "TotalDroits",
+					"description": "TOTAL DROITS INSCRIPTION"
+				},
+				{
+					"name": "TotalEtudiants",
+					"description": "TOTAL ETUDIANTS"
+				},
+				{
+					"name": "DroitsDerived"
+				},
+				{
+					"name": "EtudiantsDerived"
+				},
+				{
+					"name": "JOIN"
+				},
+				{
+					"name": "MOYEN"
+				},
+				{
+					"name": "GTE2022"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Charge/Produit} as boolean,",
+				"          {Année} as short,",
+				"          {Code direction} as string,",
+				"          Direction as string,",
+				"          {Code service} as string,",
+				"          Service as string,",
+				"          {Code Cpt Reg} as string,",
+				"          {Compte de regroupement} as string,",
+				"          {Libellé regroupement} as string,",
+				"          {Code cpt budget} as string,",
+				"          {Compte budgétaire} as string,",
+				"          {Code lig budget} as string,",
+				"          {Ligne budgétaire} as string,",
+				"          {Code rubrique} as string,",
+				"          {Rubrique analytique} as string,",
+				"          {Code Reg} as string,",
+				"          Regroupement as string,",
+				"          Site as string,",
+				"          Budget as double,",
+				"          {Mt initial} as double,",
+				"          {Mt révisé} as double,",
+				"          {Mt primitif} as double,",
+				"          {Mt réalisé} as double,",
+				"          Ecart as double,",
+				"          {Mt hors Eng} as double,",
+				"          {Mt Eng} as double,",
+				"          {Mt disponible} as double,",
+				"          {Mt préparation} as double,",
+				"          {Mt commande} as double,",
+				"          {Mt livraison} as double,",
+				"          {Mt facture} as double,",
+				"          {Mt contrat} as double,",
+				"          {Mt facture cpta} as double,",
+				"          {Mt en cours de saisie} as double,",
+				"          {Disponible à terme} as double,",
+				"          Budget_Abs as double,",
+				"          Realise_Abs as double,",
+				"          Realise_2223 as double,",
+				"          Realise_2324 as double,",
+				"          Budget_2324 as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DROITS",
+				"source(output(",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Programme} as string,",
+				"          {Code.Statut d'inscription} as string,",
+				"          {Code.Type de groupe} as string,",
+				"          {Libellé.Programme} as string,",
+				"          {Nom de naissance.Apprenant} as string,",
+				"          {Prénom.Apprenant} as string,",
+				"          {id.Apprenant} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ETUDIANTS",
+				"DROITS aggregate(groupBy({Année},",
+				"          Site),",
+				"     totalDroits = count()) ~> TotalDroits",
+				"GTE2022 aggregate(groupBy(CAMPUS,",
+				"          {Code.Année académique}),",
+				"     totalEtudiants = count()) ~> TotalEtudiants",
+				"TotalDroits derive(key = concatWS('_', lower(Site), toString({Année}-1), toString({Année})),",
+				"          anne_academique = concatWS('_', toString({Année}-1), toString({Année}))) ~> DroitsDerived",
+				"TotalEtudiants derive(key = concatWS('_', lower(CAMPUS), {Code.Année académique})) ~> EtudiantsDerived",
+				"DroitsDerived, EtudiantsDerived join(DroitsDerived@key == EtudiantsDerived@key,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JOIN",
+				"JOIN aggregate(groupBy(CAMPUS,",
+				"          anne_academique,",
+				"          totalEtudiants,",
+				"          totalDroits),",
+				"     moyen = sum(totalDroits)/sum(totalEtudiants)) ~> MOYEN",
+				"ETUDIANTS filter(toInteger(split({Code.Année académique}, '_')[1])>=2022) ~> GTE2022",
+				"MOYEN sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI011_DROITS_INSCRIPTION_MOYEN'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

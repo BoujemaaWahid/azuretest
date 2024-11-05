@@ -1,0 +1,21 @@
+{
+	"name": "API_RESPONSE_FI001_NB_ETUDIANTS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "API_RESPONSE_FI001_NB_ETUDIANTS",
+				"folderPath": "API_RESPONSE_FI001_NB_ETUDIANTS",
+				"container": "datafactory"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

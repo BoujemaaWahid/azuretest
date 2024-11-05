@@ -1,0 +1,86 @@
+{
+	"name": "TRANSFORM SPE_ICP_SYNTHESE BUDGET_ANNUELLE DATAFLOW",
+	"properties": {
+		"description": "TRANSFORM SPE_ICP_SYNTHESE BUDGET_ANNUELLE DATAFLOW",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					},
+					"name": "SyntheseBudgetaireAnnuelle"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					},
+					"name": "ResultTransformedColumns"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Charge/Produit} as short,",
+				"          {Année} as short,",
+				"          {Code direction} as string,",
+				"          Direction as string,",
+				"          {Code service} as string,",
+				"          Service as string,",
+				"          {Code Cpt Reg} as string,",
+				"          {Compte de regroupement} as string,",
+				"          {Libellé regroupement} as string,",
+				"          {Code cpt budget} as string,",
+				"          {Compte budgétaire} as string,",
+				"          {Code lig budget} as string,",
+				"          {Ligne budgétaire} as string,",
+				"          {Code rubrique} as string,",
+				"          {Rubrique analytique} as string,",
+				"          {Code Reg} as string,",
+				"          Regroupement as string,",
+				"          Site as string,",
+				"          Budget as double,",
+				"          {Mt initial} as double,",
+				"          {Mt révisé} as double,",
+				"          {Mt primitif} as double,",
+				"          {Mt réalisé} as double,",
+				"          Ecart as double,",
+				"          {Mt hors Eng} as double,",
+				"          {Mt Eng} as double,",
+				"          {Mt disponible} as double,",
+				"          {Mt préparation} as double,",
+				"          {Mt commande} as double,",
+				"          {Mt livraison} as double,",
+				"          {Mt facture} as double,",
+				"          {Mt contrat} as double,",
+				"          {Mt facture cpta} as double,",
+				"          {Mt en cours de saisie} as double,",
+				"          {Disponible à terme} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SyntheseBudgetaireAnnuelle",
+				"SyntheseBudgetaireAnnuelle derive(Budget_Abs = abs(Budget),",
+				"          Realise_Abs = abs({Mt réalisé}),",
+				"          Realise_2223 = iif({Année}==2023, {Mt réalisé}, toDouble(0)),",
+				"          Realise_2324 = iif({Année}==2024, {Mt réalisé}, toDouble(0)),",
+				"          Budget_2324 = iif({Année}==2024, {Mt réalisé}, toDouble(0))) ~> DerivedColumns",
+				"DerivedColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'RESULT_TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE',",
+				"     truncate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ResultTransformedColumns"
+			]
+		}
+	}
+}

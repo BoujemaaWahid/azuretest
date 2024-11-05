@@ -1,0 +1,56 @@
+{
+	"name": "FI012_CANDIDATS_PER_ACADEMIC_YEAR",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_ALL_CANDIDATS",
+						"type": "DatasetReference"
+					},
+					"name": "Candidats"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI012_CANDIDATS_PER_ACADEMIC_YEAR",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CountDistinct"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Programme} as string,",
+				"          {Code.Statut d'inscription} as string,",
+				"          {Code.Type de groupe} as string,",
+				"          {Libellé.Programme} as string,",
+				"          {Nom de naissance.Apprenant} as string,",
+				"          {Prénom.Apprenant} as string,",
+				"          {id.Apprenant} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> Candidats",
+				"Candidats aggregate(groupBy({Code.Année académique}),",
+				"     total = countDistinct({id.Apprenant})) ~> CountDistinct",
+				"CountDistinct sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI012_CANDIDATS_PER_ACADEMIC_YEAR'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

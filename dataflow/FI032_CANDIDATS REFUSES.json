@@ -1,0 +1,61 @@
+{
+	"name": "FI032_CANDIDATS REFUSES",
+	"properties": {
+		"description": "CANDIDATS REFUSES DATAFLOW",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_ALL_CANDIDATS",
+						"type": "DatasetReference"
+					},
+					"name": "Candidats"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI032_CANDIDATS_REFUSES",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "REFUSESFILTER"
+				},
+				{
+					"name": "GROUPING"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Programme} as string,",
+				"          {Code.Statut d'inscription} as string,",
+				"          {Code.Type de groupe} as string,",
+				"          {Libellé.Programme} as string,",
+				"          {Nom de naissance.Apprenant} as string,",
+				"          {Prénom.Apprenant} as string,",
+				"          {id.Apprenant} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> Candidats",
+				"Candidats filter(in([\"DECLINE\"], {Code.Statut d'inscription})) ~> REFUSESFILTER",
+				"REFUSESFILTER aggregate(groupBy({Code.Année académique}),",
+				"     totalRefuses = countDistinct({id.Apprenant})) ~> GROUPING",
+				"GROUPING sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI032_CANDIDATS_REFUSES'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

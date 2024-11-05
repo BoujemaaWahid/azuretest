@@ -1,0 +1,17 @@
+{
+	"name": "TABLE_SPE_LIGNE_COMPTE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAGE_P2P_DATABASE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SPE_LIGNECOMPTE"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

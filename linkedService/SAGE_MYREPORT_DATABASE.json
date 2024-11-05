@@ -1,0 +1,22 @@
+{
+	"name": "SAGE_MYREPORT_DATABASE",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "SAGE_MYREPORT_DATABASE",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "srv-myreport.icp.lan",
+			"database": "DWH_BE",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "Windows",
+			"userName": "qwanza@icp.fr",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzYzgxZTA2ZS0yY2UxLTQ0MWQtODJhOS01MjJkZmYyNGRiNjAiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "ICP-SAGE",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

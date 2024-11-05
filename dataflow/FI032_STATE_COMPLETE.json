@@ -1,0 +1,61 @@
+{
+	"name": "FI032_STATE_COMPLETE",
+	"properties": {
+		"description": "Candidats Aurion\nCount( distinct {id.apprenant} ) GROUP BY {code.annee_academique}  avec statut complet ? ",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_ALL_CANDIDATS",
+						"type": "DatasetReference"
+					},
+					"name": "DATA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI032_STATE_COMPLETE",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterComplete"
+				},
+				{
+					"name": "Count"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Programme} as string,",
+				"          {Code.Statut d'inscription} as string,",
+				"          {Code.Type de groupe} as string,",
+				"          {Libellé.Programme} as string,",
+				"          {Nom de naissance.Apprenant} as string,",
+				"          {Prénom.Apprenant} as string,",
+				"          {id.Apprenant} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> DATA",
+				"DATA filter({Code.Statut d'inscription}==\"DOSSIER_COMPLET\") ~> FilterComplete",
+				"FilterComplete aggregate(groupBy({Code.Année académique}),",
+				"     total_complete = countDistinct({id.Apprenant})) ~> Count",
+				"Count sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI032_STATE_COMPLETE'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

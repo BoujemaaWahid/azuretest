@@ -1,0 +1,25 @@
+{
+	"name": "TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "RESULT_TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+				"folderPath": "TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+				"container": "datafactory"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

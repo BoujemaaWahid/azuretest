@@ -1,0 +1,20 @@
+{
+	"name": "API_FI004_NB_HR",
+	"properties": {
+		"description": "load data\nFI004: Nb d'heures de cours",
+		"linkedServiceName": {
+			"referenceName": "AURION_BASE_URL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "?action=transformFavori&data=<?xml version=\"1.0\" encoding=\"UTF-8\"?><transformFavori><favori><id>166009781</id></favori><database>icp_prod</database><xslFile>JSON_json.xsl</xslFile></transformFavori>"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

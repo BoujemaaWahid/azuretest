@@ -1,0 +1,106 @@
+{
+	"name": "FI031_INVESTISSEMENT DATAFLOW",
+	"properties": {
+		"description": "INVESTISSEMENT DATAFLOW",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSV_ECRITURE_COMPTABLE__BI",
+						"type": "DatasetReference"
+					},
+					"name": "ECRITURECOMPTABLE"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULTAT_FI031_INVESTISSEMENT",
+						"type": "DatasetReference"
+					},
+					"name": "RESULTAT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SELECT",
+					"description": "SELECT avec des colonnes « NUMERO_PIECE, NATURE_PIECE, REFERENCE, MODREGL, NUMERO, LIB_ECRITURE, DEVISE, SENS, SOLDE, DEBIT, CREDIT, NB_JOUR_DE_RETARD, NB_JOUR_RETARD2, TRANCHE_DE_JOUR_DE_RETARD, ORIGINE_LOT, TYPE_LOT, NATURE_LOT, CODE_COMPTE, LIB_COMPTE, NATURE_COMPTE, N__COMPTE_GENERAL_1, N__COMPTE_GENERAL_2, N__COMPTE_GENERAL_3, N__COMPTE_GENERAL_4, DATE_, ANMOISJOUR, MOISJOUR, JOUR, JOUR_SEMAINE, SEMAINE, ANMOIS, MOIS, LIBELLE_MOIS, TRIMESTRE, SEMESTRE, ANNEE, EXERCICE »"
+				},
+				{
+					"name": "GroupLibCompte",
+					"description": "Grouper par Lib Compte"
+				},
+				{
+					"name": "FiltreCodeCompte",
+					"description": "Filtrer les code compte relatifs aux investissements"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          NUMERO_PIECE as string,",
+				"          NATURE_PIECE as string,",
+				"          REFERENCE as string,",
+				"          MODREGL as string,",
+				"          NUMERO as integer,",
+				"          LIB_ECRITURE as string,",
+				"          DEVISE as string,",
+				"          SENS as boolean,",
+				"          SOLDE as double,",
+				"          DEBIT as double,",
+				"          CREDIT as double,",
+				"          NB_JOUR_DE_RETARD as short,",
+				"          NB_JOUR_RETARD2 as boolean,",
+				"          TRANCHE_DE_JOUR_DE_RETARD as string,",
+				"          ORIGINE_LOT as string,",
+				"          TYPE_LOT as string,",
+				"          NATURE_LOT as string,",
+				"          CODE_COMPTE as integer,",
+				"          LIB_COMPTE as string,",
+				"          NATURE_COMPTE as string,",
+				"          N__COMPTE_GENERAL_1 as short,",
+				"          N__COMPTE_GENERAL_2 as short,",
+				"          N__COMPTE_GENERAL_3 as short,",
+				"          N__COMPTE_GENERAL_4 as short,",
+				"          DATE_ as string,",
+				"          ANMOISJOUR as date,",
+				"          MOISJOUR as short,",
+				"          JOUR as short,",
+				"          JOUR_SEMAINE as string,",
+				"          SEMAINE as short,",
+				"          ANMOIS as integer,",
+				"          MOIS as short,",
+				"          LIBELLE_MOIS as string,",
+				"          TRIMESTRE as short,",
+				"          SEMESTRE as short,",
+				"          ANNEE as short,",
+				"          EXERCICE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ECRITURECOMPTABLE",
+				"FiltreCodeCompte select(mapColumn(",
+				"          LIB_COMPTE,",
+				"          SOLDE,",
+				"          DEBIT,",
+				"          CREDIT,",
+				"          ANNEE",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SELECT",
+				"SELECT aggregate(groupBy(LIB_COMPTE,",
+				"          ANNEE),",
+				"     SOLDE = sum(SOLDE),",
+				"          DEBIT = sum(DEBIT),",
+				"          CREDIT = sum(CREDIT)) ~> GroupLibCompte",
+				"ECRITURECOMPTABLE filter(between({CODE_COMPTE}, 203000, 232550)) ~> FiltreCodeCompte",
+				"GroupLibCompte sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULTAT_FI031_INVESTISSEMENT'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULTAT"
+			]
+		}
+	}
+}

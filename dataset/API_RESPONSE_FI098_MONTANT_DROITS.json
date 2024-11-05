@@ -1,0 +1,21 @@
+{
+	"name": "API_RESPONSE_FI098_MONTANT_DROITS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "API_RESPONSE_FI098",
+				"folderPath": "API_RESPONSE_FI098",
+				"container": "datafactory"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

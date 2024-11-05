@@ -1,0 +1,96 @@
+{
+	"name": "ICP FI006 PRODUITS",
+	"properties": {
+		"description": "Compte de résultat d'exploitation",
+		"activities": [
+			{
+				"name": "PRODUITS",
+				"description": "COMPTE RESULTAT EXPLOITATION DATAFLOW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "SPE_ICP_SYNTHESE_BUDGET_ANNUELLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI006_PRODUITS DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SPE_ICP_SYNTHESE_BUDGET_ANNUELLE",
+				"description": "Copy table SPE_ICP_SYNTHESE_BUDGET_ANNUELLE dans un CSV",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TABLE_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-09-19T10:57:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

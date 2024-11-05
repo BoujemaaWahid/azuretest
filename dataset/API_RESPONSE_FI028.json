@@ -1,0 +1,22 @@
+{
+	"name": "API_RESPONSE_FI028",
+	"properties": {
+		"description": "RESPONSE\nFrais d'inscription en licence hors réduction CROUS + hors bourse diverse",
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "API_RESPONSE_FI028",
+				"folderPath": "API_RESPONSE_FI028",
+				"container": "datafactory"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

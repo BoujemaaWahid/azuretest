@@ -1,0 +1,16 @@
+{
+	"name": "api_CoursWithInterventions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AURION",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "/servlet/Dispatcher?action=transformFavori&data=%3C?xml%20version=%221.0%22%20encoding=%22UTF-8%22?%3E%3CtransformFavori%3E%3Cfavori%3E%3Cid%3E166009781%3C/id%3E%3C/favori%3E%3Cdatabase%3Eicp_prod%3C/database%3E%3CxslFile%3EJSON_json.xsl%3C/xslFile%3E%3C/transformFavori%3E"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

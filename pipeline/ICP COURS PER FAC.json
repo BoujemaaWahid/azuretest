@@ -1,0 +1,91 @@
+{
+	"name": "ICP COURS PER FAC",
+	"properties": {
+		"description": "addition du nombre de cours par fac\nIdentifiant du KPI: FI004",
+		"activities": [
+			{
+				"name": "NUMBER OF COURSES BY CAMPUS DATAFLOW",
+				"description": "addition du nombre de cours par fac\nIdentifiant du KPI: FI004",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "List des cours avec interventions",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "NUMBER OF COURSES BY CAMPUS DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "List des cours avec interventions",
+				"description": "Copy list des cours avec interventions en json",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:10:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": "<service>\n\t\t<user> bi@icp.fr</user>\n\t\t<password>*sUq:4[u5F8Nc8)B</password>\n\t\t<database>icp_prod</database>\n\t\t<dataxml><![CDATA[<transformFavori><favori><id>157604619</id></favori><database>icp_prod</database><xslFile>JSON_json.xsl</xslFile></transformFavori>]]></dataxml>\n</service>",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "api_CoursWithInterventions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "json_courses_with_interventions",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-08-05T14:03:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

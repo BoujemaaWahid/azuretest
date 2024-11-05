@@ -1,0 +1,194 @@
+{
+	"name": "TABLE_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAGE_P2P_DATABASE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Charge/Produit",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Année",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Code direction",
+				"type": "varchar"
+			},
+			{
+				"name": "Direction",
+				"type": "varchar"
+			},
+			{
+				"name": "Code service",
+				"type": "varchar"
+			},
+			{
+				"name": "Service",
+				"type": "varchar"
+			},
+			{
+				"name": "Code Cpt Reg",
+				"type": "varchar"
+			},
+			{
+				"name": "Compte de regroupement",
+				"type": "varchar"
+			},
+			{
+				"name": "Libellé regroupement",
+				"type": "varchar"
+			},
+			{
+				"name": "Code cpt budget",
+				"type": "varchar"
+			},
+			{
+				"name": "Compte budgétaire",
+				"type": "varchar"
+			},
+			{
+				"name": "Code lig budget",
+				"type": "varchar"
+			},
+			{
+				"name": "Ligne budgétaire",
+				"type": "varchar"
+			},
+			{
+				"name": "Code rubrique",
+				"type": "varchar"
+			},
+			{
+				"name": "Rubrique analytique",
+				"type": "varchar"
+			},
+			{
+				"name": "Code Reg",
+				"type": "varchar"
+			},
+			{
+				"name": "Regroupement",
+				"type": "varchar"
+			},
+			{
+				"name": "Site",
+				"type": "varchar"
+			},
+			{
+				"name": "Budget",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt initial",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt révisé",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt primitif",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt réalisé",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Ecart",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt hors Eng",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt Eng",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt disponible",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt préparation",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt commande",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt livraison",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt facture",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt contrat",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt facture cpta",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Mt en cours de saisie",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			},
+			{
+				"name": "Disponible à terme",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 8
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

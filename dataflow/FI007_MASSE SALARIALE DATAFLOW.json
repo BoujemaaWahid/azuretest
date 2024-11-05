@@ -1,0 +1,88 @@
+{
+	"name": "FI007_MASSE SALARIALE DATAFLOW",
+	"properties": {
+		"description": "Masse salariale",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					},
+					"name": "SyntheseBudgetaireAnnuelle"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI007_MASSE_SALARIALE",
+						"type": "DatasetReference"
+					},
+					"name": "Result",
+					"description": "Exporter les données dans RESULT_PRODUITS"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FILTER1",
+					"description": "in([\"L11\",\"L12\",\"L13\",\"L14\",\"L15\",\"L16\",\"L17\",\"L18\",\"L33\"], {Code Cpt Reg})"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Charge/Produit} as short,",
+				"          {Année} as short,",
+				"          {Code direction} as string,",
+				"          Direction as string,",
+				"          {Code service} as string,",
+				"          Service as string,",
+				"          {Code Cpt Reg} as string,",
+				"          {Compte de regroupement} as string,",
+				"          {Libellé regroupement} as string,",
+				"          {Code cpt budget} as string,",
+				"          {Compte budgétaire} as string,",
+				"          {Code lig budget} as string,",
+				"          {Ligne budgétaire} as string,",
+				"          {Code rubrique} as string,",
+				"          {Rubrique analytique} as string,",
+				"          {Code Reg} as string,",
+				"          Regroupement as string,",
+				"          Site as string,",
+				"          Budget as double,",
+				"          {Mt initial} as double,",
+				"          {Mt révisé} as double,",
+				"          {Mt primitif} as double,",
+				"          {Mt réalisé} as double,",
+				"          Ecart as double,",
+				"          {Mt hors Eng} as double,",
+				"          {Mt Eng} as double,",
+				"          {Mt disponible} as double,",
+				"          {Mt préparation} as double,",
+				"          {Mt commande} as double,",
+				"          {Mt livraison} as double,",
+				"          {Mt facture} as double,",
+				"          {Mt contrat} as double,",
+				"          {Mt facture cpta} as double,",
+				"          {Mt en cours de saisie} as double,",
+				"          {Disponible à terme} as double,",
+				"          Budget_Abs as double,",
+				"          Realise_Abs as double,",
+				"          Realise_2223 as double,",
+				"          Realise_2324 as double,",
+				"          Budget_2324 as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SyntheseBudgetaireAnnuelle",
+				"SyntheseBudgetaireAnnuelle filter(in([\"L11\",\"L12\",\"L13\",\"L14\",\"L15\",\"L16\",\"L17\",\"L18\", \"L19\", \"L20\", \"L21\", \"L23\"], {Code Cpt Reg})) ~> FILTER1",
+				"FILTER1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI007_MASSE_SALARIALE'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> Result"
+			]
+		}
+	}
+}

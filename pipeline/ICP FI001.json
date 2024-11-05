@@ -1,0 +1,91 @@
+{
+	"name": "ICP FI001",
+	"properties": {
+		"description": "Nombre d'étudiants",
+		"activities": [
+			{
+				"name": "LOAD DATA",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "POST",
+							"requestBody": "<service>\n\t\t<user> bi@icp.fr</user>\n\t\t<password>*sUq:4[u5F8Nc8)B</password>\n\t\t<database>icp_prod</database>\n\t\t<dataxml><![CDATA[<transformFavori><favori><id>157604619</id></favori><database>icp_prod</database><xslFile>JSON_json.xsl</xslFile></transformFavori>]]></dataxml>\n</service>",
+							"requestTimeout": ""
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "API_FI001_NB_ETUDIANTS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "API_RESPONSE_FI001_NB_ETUDIANTS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "FI001-NBR-ETUDIANTS",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "LOAD DATA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI001_NBR_ETUDIANTS",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-09-17T11:05:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

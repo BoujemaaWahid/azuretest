@@ -1,0 +1,86 @@
+{
+	"name": "FI001_NBR_ETUDIANTS",
+	"properties": {
+		"description": "Nombre d'étudiants",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_FI001_NB_ETUDIANTS",
+						"type": "DatasetReference"
+					},
+					"name": "DATA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI001_ALL",
+						"type": "DatasetReference"
+					},
+					"name": "RESULTALL"
+				},
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI001_GROUP",
+						"type": "DatasetReference"
+					},
+					"name": "GROUPRESULT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Aggregation"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Année d'obtention Licence Hors ICP} as short,",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Boursier du Crous} as string,",
+				"          {Code.Diplôme Licence Hors ICP} as boolean,",
+				"          {Code.Département} as string,",
+				"          {Code.Programme} as string,",
+				"          {Code.Programme Licence} as string,",
+				"          {Code.Statut d'inscription} as string,",
+				"          {Code.Série du bac} as string,",
+				"          {Etablissement Licence Hors ICP} as string,",
+				"          {Libellé.Etablissement} as string,",
+				"          {Libellé.Programme} as string,",
+				"          {Libellé.Programme Licence} as string,",
+				"          {Nom de naissance.Apprenant} as string,",
+				"          {Posix M1} as string,",
+				"          {Prénom.Apprenant} as string,",
+				"          {academie.bac} as string,",
+				"          entite as string,",
+				"          {id.Apprenant} as integer,",
+				"          pays as string,",
+				"          {type.apprenant} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> DATA",
+				"DATA aggregate(groupBy({academie.bac},",
+				"          {Code.Année académique},",
+				"          CAMPUS,",
+				"          {Code.Programme}),",
+				"     nbrEtudiant = countDistinct({id.Apprenant})) ~> Aggregation",
+				"DATA sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'RESULT_FI001_ALL',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULTALL",
+				"Aggregation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI001_GROUP'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> GROUPRESULT"
+			]
+		}
+	}
+}

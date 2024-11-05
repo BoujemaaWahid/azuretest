@@ -1,0 +1,63 @@
+{
+	"name": "FI004_NB_HR",
+	"properties": {
+		"description": "Nb d'heures de cours",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_FI004_NB_HR",
+						"type": "DatasetReference"
+					},
+					"name": "DATA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI004",
+						"type": "DatasetReference"
+					},
+					"name": "ResultNbrHR"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Group"
+				},
+				{
+					"name": "KeepRealised"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Campus as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Statut d'intervention} as string,",
+				"          Organisme as string,",
+				"          activite as string,",
+				"          {id.Intervenant} as integer,",
+				"          {id.Intervention} as integer,",
+				"          {nb.heures} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> DATA",
+				"KeepRealised aggregate(groupBy({Code.Année académique},",
+				"          CAMPUS = Campus,",
+				"          Organisme,",
+				"          activite),",
+				"     totalHR = sum({nb.heures})) ~> Group",
+				"DATA filter(lower({Code.Statut d'intervention})==\"realise\") ~> KeepRealised",
+				"Group sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI004'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ResultNbrHR"
+			]
+		}
+	}
+}

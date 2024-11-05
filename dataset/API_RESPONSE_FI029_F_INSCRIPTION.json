@@ -1,0 +1,22 @@
+{
+	"name": "API_RESPONSE_FI029_F_INSCRIPTION",
+	"properties": {
+		"description": "RESPONSE\nFrais d'inscription par tranche tarifaire et hors bourses diverses",
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "API_RESPONSE_FI029_F_INSCRIPTION",
+				"folderPath": "API_RESPONSE_FI029_F_INSCRIPTION",
+				"container": "datafactory"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

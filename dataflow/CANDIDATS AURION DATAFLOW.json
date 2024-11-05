@@ -1,0 +1,57 @@
+{
+	"name": "CANDIDATS AURION DATAFLOW",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json_Candidats_Aurion_All",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_CANDIDATS_AURION_ALL",
+						"type": "DatasetReference"
+					},
+					"name": "ResultsCandidatsAurionAll"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          {Code.Financement type} as string,",
+				"          {Code.Tarif} as string,",
+				"          {Financement exclusif par l'apprenant.Tarif} as boolean,",
+				"          {Financement exclusif par le tiers qui commande.Tarif} as boolean,",
+				"          {Libellé.Financement type} as string,",
+				"          {Libellé.Tarif} as string,",
+				"          {Prix unitaire HT par défaut.Tarif} as double,",
+				"          {Quantité par défaut.Tarif} as double,",
+				"          {Rentre dans l'assiette commerciale.Tarif} as boolean,",
+				"          {Tarif au crédit.Tarif} as boolean,",
+				"          {Tarif forfaitaire.Tarif} as boolean,",
+				"          {Tarif à l'heure.Tarif} as boolean,",
+				"          {Tarif à la journée.Tarif} as boolean,",
+				"          {Taux de TVA.Tarif} as double,",
+				"          {Total TTC.Tarif} as double,",
+				"          {id.Financement type} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_CANDIDATS_AURION_ALL'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ResultsCandidatsAurionAll"
+			]
+		}
+	}
+}

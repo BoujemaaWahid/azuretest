@@ -1,0 +1,13 @@
+{
+	"name": "API_Candidat_Aurion_All",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://AURIONapp-prod.icp.fr:443/servlet/Dispatcher?action=transformFavori&data=<?xml version=\"1.0\" encoding=\"UTF-8\"?><transformFavori><favori><id>157605039</id></favori><database>icp_prod</database><xslFile>JSON_json.xsl</xslFile></transformFavori>",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

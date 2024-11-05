@@ -1,0 +1,92 @@
+{
+	"name": "FI002_DROIT INSCRIPTION DATAFLOW",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TRANSFORMED_CSV_SPE_ICP__SYNTHESE_BUDGETAIRE_ANNUELLE",
+						"type": "DatasetReference"
+					},
+					"name": "SyntheseBudgetaireAnnuelle"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI002_DROITS_INSCRIPTION",
+						"type": "DatasetReference"
+					},
+					"name": "ResultDroitsInscription",
+					"description": "Exporter les données dans RESULT_DROITS_INSCRIPTION",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "cptBudgetEqualL0105",
+					"description": "Where [Code cpt budget] = 'L0105'"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Charge/Produit} as short,",
+				"          {Année} as short,",
+				"          {Code direction} as string,",
+				"          Direction as string,",
+				"          {Code service} as string,",
+				"          Service as string,",
+				"          {Code Cpt Reg} as string,",
+				"          {Compte de regroupement} as string,",
+				"          {Libellé regroupement} as string,",
+				"          {Code cpt budget} as string,",
+				"          {Compte budgétaire} as string,",
+				"          {Code lig budget} as string,",
+				"          {Ligne budgétaire} as string,",
+				"          {Code rubrique} as string,",
+				"          {Rubrique analytique} as string,",
+				"          {Code Reg} as string,",
+				"          Regroupement as string,",
+				"          Site as string,",
+				"          Budget as double,",
+				"          {Mt initial} as double,",
+				"          {Mt révisé} as double,",
+				"          {Mt primitif} as double,",
+				"          {Mt réalisé} as double,",
+				"          Ecart as double,",
+				"          {Mt hors Eng} as double,",
+				"          {Mt Eng} as double,",
+				"          {Mt disponible} as double,",
+				"          {Mt préparation} as double,",
+				"          {Mt commande} as double,",
+				"          {Mt livraison} as double,",
+				"          {Mt facture} as double,",
+				"          {Mt contrat} as double,",
+				"          {Mt facture cpta} as double,",
+				"          {Mt en cours de saisie} as double,",
+				"          {Disponible à terme} as double,",
+				"          Budget_Abs as double,",
+				"          Realise_Abs as double,",
+				"          Realise_2223 as double,",
+				"          Realise_2324 as double,",
+				"          Budget_2324 as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SyntheseBudgetaireAnnuelle",
+				"SyntheseBudgetaireAnnuelle filter({Code Cpt Reg}==\"L01\") ~> cptBudgetEqualL0105",
+				"cptBudgetEqualL0105 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI002_DROITS_INSCRIPTION'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     partitionBy('hash', 1)) ~> ResultDroitsInscription"
+			]
+		}
+	}
+}

@@ -1,0 +1,79 @@
+{
+	"name": "FI028_FI_HORS",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_FI028",
+						"type": "DatasetReference"
+					},
+					"name": "DATA",
+					"description": "Importer des données de API_RESPONSE_FI028"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI028_AGGREGATE",
+						"type": "DatasetReference"
+					},
+					"name": "ResultAggregate"
+				},
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI028_FULL",
+						"type": "DatasetReference"
+					},
+					"name": "ResultFull"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AVG"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Campus as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Echelon Bourse Crous} as short,",
+				"          {Code.Groupe} as string,",
+				"          {Frais de cursus après déduction bourse} as double,",
+				"          {Frais de cursus avant déduction bourse} as double,",
+				"          {Libellé.Groupe} as string,",
+				"          {Montant bourse} as short,",
+				"          {Nom d'usage} as string,",
+				"          {Nom de naissance} as string,",
+				"          {Prénom} as string,",
+				"          entite as string,",
+				"          niveau as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> DATA",
+				"DATA aggregate(groupBy({Code.Année académique},",
+				"          {Code.Groupe}),",
+				"     avg_apres_deduction_bourse = avg({Frais de cursus après déduction bourse}),",
+				"          avg_avant_deduction_bourse = avg({Frais de cursus avant déduction bourse}),",
+				"          sum_apres_deduction_bourse = sum({Frais de cursus après déduction bourse}),",
+				"          sum_avant_deduction_bourse = sum({Frais de cursus avant déduction bourse}),",
+				"          sum_bourse = avg({Montant bourse})) ~> AVG",
+				"AVG sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI028_AGGREGATE'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ResultAggregate",
+				"DATA sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI028_FULL'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ResultFull"
+			]
+		}
+	}
+}

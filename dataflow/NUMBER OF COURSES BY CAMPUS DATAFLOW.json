@@ -1,0 +1,76 @@
+{
+	"name": "NUMBER OF COURSES BY CAMPUS DATAFLOW",
+	"properties": {
+		"description": "Number of courses by compus\nIdentifiant du KPI: FI004",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "json_courses_with_interventions",
+						"type": "DatasetReference"
+					},
+					"name": "CoursesWithInterventions"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TOTAL_COURSES_BY_CAMPUS",
+						"type": "DatasetReference"
+					},
+					"name": "CsvCoursesTotalByCampus",
+					"description": "Courses total by campus sink csv"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CoursesTotalByCampus"
+				},
+				{
+					"name": "SelectDistinctIdCours"
+				},
+				{
+					"name": "SelectColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CAMPUS as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Cours} as string,",
+				"          {Code.Statut d'intervention} as string,",
+				"          {Code.Statut type d'intervenant} as string,",
+				"          {Libellé.Cours} as string,",
+				"          {Libellé.Statut d'intervention} as string,",
+				"          {Libellé.Statut type d'intervenant} as string,",
+				"          {Matricule.Intervenant} as short,",
+				"          {Nombre d'heures réelles.Intervention} as double,",
+				"          {id.Cours} as integer,",
+				"          {id.Intervention} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> CoursesWithInterventions",
+				"SelectDistinctIdCours aggregate(groupBy(CAMPUS = campus),",
+				"     COURSES_TOTAL = count(id_cours)) ~> CoursesTotalByCampus",
+				"SelectColumns aggregate(groupBy(id_cours),",
+				"     each(match(name!='id_cours'), $$ = first($$))) ~> SelectDistinctIdCours",
+				"CoursesWithInterventions select(mapColumn(",
+				"          campus = CAMPUS,",
+				"          code_cours = {Code.Cours},",
+				"          id_cours = {id.Cours}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectColumns",
+				"CoursesTotalByCampus sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['TOTAL_COURSES_BY_CAMPUS'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> CsvCoursesTotalByCampus"
+			]
+		}
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"name": "AURION",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Aurion api",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://aurionapp-prod.icp.fr",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

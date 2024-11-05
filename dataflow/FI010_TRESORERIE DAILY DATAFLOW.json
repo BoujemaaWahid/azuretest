@@ -1,0 +1,39 @@
+{
+	"name": "FI010_TRESORERIE DAILY DATAFLOW",
+	"properties": {
+		"description": "TRESORERIE DAILY DATAFLOW",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSV_ECRITURE_COMPTABLE__BI",
+						"type": "DatasetReference"
+					},
+					"name": "EcritureComptableBI"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULTAT_FI010_TRESORERIE_DAILY",
+						"type": "DatasetReference"
+					},
+					"name": "TresorerieDailyDATAFLOW"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EcritureComptableBI",
+				"EcritureComptableBI sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULTAT_FI010_TRESORERIE_DAILY'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> TresorerieDailyDATAFLOW"
+			]
+		}
+	}
+}

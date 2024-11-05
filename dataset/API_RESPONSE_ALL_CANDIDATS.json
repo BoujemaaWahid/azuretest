@@ -1,0 +1,21 @@
+{
+	"name": "API_RESPONSE_ALL_CANDIDATS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "API_RESPONSE_ALL_CANDIDATS",
+				"folderPath": "API_RESPONSE_ALL_CANDIDATS",
+				"container": "datafactory"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

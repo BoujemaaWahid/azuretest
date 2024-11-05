@@ -1,0 +1,63 @@
+{
+	"name": "FI029_F_INSCRIPTION",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "API_RESPONSE_FI029_F_INSCRIPTION",
+						"type": "DatasetReference"
+					},
+					"name": "DATA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "RESULT_FI029_F_INSCRIPTION",
+						"type": "DatasetReference"
+					},
+					"name": "RESULT"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AVG"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Campus as string,",
+				"          {Code.Année académique} as string,",
+				"          {Code.Echelon Bourse Crous} as short,",
+				"          {Code.Groupe} as string,",
+				"          {Frais de cursus après déduction bourse} as double,",
+				"          {Frais de cursus avant déduction bourse} as double,",
+				"          {Libellé.Groupe} as string,",
+				"          {Montant bourse} as short,",
+				"          {Nom d'usage} as string,",
+				"          {Nom de naissance} as string,",
+				"          {Prénom} as string,",
+				"          {Total TTC.Facture} as double,",
+				"          entite as string,",
+				"          {id.Groupe} as integer,",
+				"          niveau as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> DATA",
+				"DATA aggregate(groupBy({Code.Année académique},",
+				"          {Code.Groupe}),",
+				"     frais_avg = avg({Frais de cursus après déduction bourse})) ~> AVG",
+				"AVG sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['RESULT_FI029_F_INSCRIPTION'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> RESULT"
+			]
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "ECRITUREC_COMPTABLES__BI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAGE_MYREPORT_DATABASE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ECRITUREC_COMPTABLES__BI"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

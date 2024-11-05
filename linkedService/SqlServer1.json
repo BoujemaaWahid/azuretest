@@ -1,0 +1,21 @@
+{
+	"name": "SqlServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "srv-sage-web.icp.lan",
+			"database": "PTOP_ICP_CATALOGUE",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "Windows",
+			"userName": "qwanza@icp.fr",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjODY0Zjg3Ni1hYjI2LTQ1ODgtODY5Yi03ZWU0NTMwM2VlN2QiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "ICP-SAGE",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

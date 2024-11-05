@@ -1,0 +1,14 @@
+{
+	"name": "Table_mapping",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Table_mapping SAGE",
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "\\\\SRV-MYREPORT\\Users\\qwanza\\Downloads\\Table_mapping_SAGE.xlsx",
+			"userId": "qwanza@icp.fr",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEJCQUJDRTc4LTk1QzAtNEZCOC04MzdFLUY2MzEyMjBCMDBFOV9mMzk4NmU5MC00ZWIwLTQ5YmYtOGM5Ny02YmU4YmYyOTgyNDgiDQp9"
+		}
+	}
+}

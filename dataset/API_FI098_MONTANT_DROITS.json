@@ -1,0 +1,19 @@
+{
+	"name": "API_FI098_MONTANT_DROITS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AURION_BASE_URL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "?action=transformFavori&data=<?xml version=\"1.0\" encoding=\"UTF-8\"?><transformFavori><favori><id>168456442</id></favori><database>icp_prod</database><xslFile>JSON_json.xsl</xslFile></transformFavori>"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

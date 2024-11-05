@@ -1,0 +1,7 @@
+{
+	"name": "ICP-SAGE",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "SELF HOSTED ICP SAGE"
+	}
+}

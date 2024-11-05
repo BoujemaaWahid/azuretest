@@ -1,0 +1,95 @@
+{
+	"name": "ICP FI010 DAILY TRESORERIE",
+	"properties": {
+		"description": "ICP DAILY TRESORERIE",
+		"activities": [
+			{
+				"name": "ECRITURE_COMPTABLE__BI",
+				"description": "Copy ECRITURE_COMPTABLE_BI dans un CSV",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ECRITUREC_COMPTABLES__BI",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CSV_ECRITURE_COMPTABLE__BI",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "DAILY TRESORERIE DATAFLOW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "ECRITURE_COMPTABLE__BI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FI010_TRESORERIE DAILY DATAFLOW",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-09-19T12:56:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

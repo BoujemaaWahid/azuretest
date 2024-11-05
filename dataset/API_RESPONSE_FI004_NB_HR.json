@@ -1,0 +1,22 @@
+{
+	"name": "API_RESPONSE_FI004_NB_HR",
+	"properties": {
+		"description": "API_RESPONSE_FI004",
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "API_RESPONSE_FI004_NB_HR",
+				"folderPath": "API_RESPONSE_FI004_NB_HR",
+				"container": "datafactory"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

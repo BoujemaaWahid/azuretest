@@ -1,0 +1,22 @@
+{
+	"name": "SAGE_P2P_DATABASE",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Passerelle de connexion à la base de données SAGE-P2P",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "srv-sage-web.icp.lan",
+			"database": "PTOP_ICP_CATALOGUE",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "Windows",
+			"userName": "qwanza@icp.fr",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI5OGUwNjY4Ni04Y2FhLTRhMzMtOWY5Mi01ODAwNzgxOGFhMmIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "ICP-SAGE",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
